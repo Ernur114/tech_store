@@ -24,8 +24,10 @@ SECRET_KEY = 'django-insecure-w-d^47hoka(1(aib4oo!#4cm=20ogt24%+sc$kv%jt+^6-3bx&
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+AUTH_USER_MODEL = 'clients.Client'
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
+
 
 
 # Application definition
@@ -37,6 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'drf_yasg',
+    'clients',
 ]
 
 MIDDLEWARE = [
@@ -67,6 +73,24 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'settings.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header',
+            'description': 'Введите токен в формате: Bearer <your_access_token>',
+        }
+    },
+    'USE_SESSION_AUTH': False,
+}
 
 
 # Database
