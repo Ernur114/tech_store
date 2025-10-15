@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Store</title>
+    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<header>
+    <span class="techstore-title">Tech Store</span>
+    <div style="display:flex; align-items:center; justify-content: space-between;">
+        <nav class="navbar">
+            <a href="{% url 'home' %}" class="nav-item">
+                <i class="fa-solid fa-house"></i> Главная
+            </a>
+            <a href="{% url 'cart' %}" class="nav-item">
+                <i class="fa-solid fa-cart-shopping"></i> Корзина
+                {% if order %}
+                    <span class="cart-count">{{ order.items.count }}</span>
+                {% endif %}
+            </a>
+
+            {% if user.is_authenticated %}
+                <span class="nav-item">
+                    <i class="fa-solid fa-user"></i> {{ user.username }}
+                </span>
+                <a href="{% url 'logout' %}" class="nav-item">
+                    <i class="fa-solid fa-right-from-bracket"></i> Выйти
+                </a>
+            {% else %}
+                <a href="{% url 'login-short' %}" class="nav-item">
+                    <i class="fa-solid fa-right-to-bracket"></i> Войти
+                </a>
+                <a href="{% url 'register-short' %}" class="nav-item">
+                    <i class="fa-solid fa-user-plus"></i> Регистрация
+                </a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+    <a href="#" class="catalog-btn">Каталог товаров</a>
+
+    <div class="products-grid">
+        {% if products %}
+            {% for product in products %}
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="image-placeholder"></div>
+                {% endif %}
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.price }} ₸</p>
+            </div>
+            {% endfor %}
+            {% for _ in products|length|add:'-10' %}
+            <div class="product-card placeholder">
+                <div class="image-placeholder"></div>
+                <h3>Название товара</h3>
+                <p>Цена</p>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for i in "1234567890" %}
+            <div class="product-card placeholder">
+                <div class="image-placeholder"></div>
+                <h3>Название товара</h3>
+                <p>Цена</p>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</main>
+</body>     
+</html>

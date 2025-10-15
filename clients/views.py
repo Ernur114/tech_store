@@ -36,7 +36,7 @@ def login_page(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('/swagger/')
+            return redirect('/')
         else:
             return render(request, 'clients/login.html', {'error': 'Неверные данные для входа'})
     return render(request, 'clients/login.html')

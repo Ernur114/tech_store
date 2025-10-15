@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Корзина - Tech Store</title>
+    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}">
+</head>
+<body>
+    <header><a href="{% url 'home' %}">Главная</a></header>
+    <h1>Корзина</h1>
+    {% if order %}
+        {% for item in order.orderitem_set.all %}
+            <div class="cart-item">
+                <p>{{ item.product.name }} — {{ item.quantity }} шт — {{ item.price }}₸</p>
+            </div>
+        {% endfor %}
+        <p>Итого: {{ order.total_price }}₸</p>
+    {% else %}
+        <p>Ваша корзина пуста.</p>
+    {% endif %}
+</body>
+</html>

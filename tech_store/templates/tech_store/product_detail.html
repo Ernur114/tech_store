@@ -1,0 +1,18 @@
+{% load static %}   
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ product.name }} - Tech Store</title>
+    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}">
+</head>
+<body>
+    <header><a href="{% url 'home' %}">Главная</a></header>
+    <h1>{{ product.name }}</h1>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+    {% endif %}
+    <p>{{ product.description }}</p>
+    <p>Цена: {{ product.price }}₸</p>
+    <a href="{% url 'cart-page' %}">В корзину</a>
+</body>
+</html>
