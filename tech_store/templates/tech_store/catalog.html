@@ -40,26 +40,27 @@
 
     <h2>{{ category.name }}</h2>
 
-    <div class="products-grid">
-        {% for product in products %}
-            <div class="product-card">
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <div class="image-placeholder"></div>
-                {% endif %}
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.price }} ₸</p>
-            </div>
-        {% endfor %}
-        {% for _ in placeholders %}
-            <div class="product-card placeholder">
+<div class="products-grid">
+    {% for product in products %}
+            <a href="{% url 'product_detail' product.id %}" class="product-card">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+            {% else %}
                 <div class="image-placeholder"></div>
-                <h3>Название товара</h3>
-                <p>Цена</p>
-            </div>
-        {% endfor %}
-    </div>
+            {% endif %}
+            <h3>{{ product.name }}</h3>
+            <p>{{ product.price }} ₸</p>
+        </a>
+    {% endfor %}
+    {% for _ in placeholders %}
+        <div class="product-card placeholder">
+            <div class="image-placeholder"></div>
+            <h3>Название товара</h3>
+            <p>Цена</p>
+        </div>
+    {% endfor %}
+</div>
+
 </main>
 </body>
 </html>

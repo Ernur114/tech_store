@@ -1,19 +1,18 @@
+from django.shortcuts import render, get_object_or_404, redirect
 from rest_framework import generics, permissions
 from .models import Category, Product, Order, OrderItem
-from .serializers import CategorySerializer, ProductSerializer, OrderSerializer, OrderItemSerializer
-from django.shortcuts import render, get_object_or_404
+from .serializers import CategorySerializer, ProductSerializer, OrderSerializer
+from django.contrib.auth.decorators import login_required
 
-def home(request):
+def home_view(request):
     categories = Category.objects.all()
     products = Product.objects.filter(is_active=True)
     total_cards = 10
-    placeholders_count = max(total_cards - products.count(), 0)
-    placeholders = range(placeholders_count)
+    placeholders = range(max(total_cards - products.count(), 0))
 
     order = None
     if request.user.is_authenticated:
-        orders = Order.objects.filter(user=request.user, is_paid=False)
-        order = orders.first() if orders.exists() else None
+        order = Order.objects.filter(user=request.user, is_paid=False).first()
 
     return render(request, 'tech_store/index.html', {
         'categories': categories,
@@ -22,17 +21,16 @@ def home(request):
         'order': order
     })
 
+
 def catalog_view(request):
     categories = Category.objects.all()
     products = Product.objects.filter(is_active=True)
     total_cards = 10
-    placeholders_count = max(total_cards - products.count(), 0)
-    placeholders = range(placeholders_count)
+    placeholders = range(max(total_cards - products.count(), 0))
 
     order = None
     if request.user.is_authenticated:
-        orders = Order.objects.filter(user=request.user, is_paid=False)
-        order = orders.first() if orders.exists() else None
+        order = Order.objects.filter(user=request.user, is_paid=False).first()
 
     return render(request, 'tech_store/catalog.html', {
         'categories': categories,
@@ -46,13 +44,11 @@ def category_detail(request, slug):
     products = Product.objects.filter(category=category, is_active=True)
     categories = Category.objects.all()
     total_cards = 10
-    placeholders_count = max(total_cards - products.count(), 0)
-    placeholders = range(placeholders_count)
+    placeholders = range(max(total_cards - products.count(), 0))
 
     order = None
     if request.user.is_authenticated:
-        orders = Order.objects.filter(user=request.user, is_paid=False)
-        order = orders.first() if orders.exists() else None
+        order = Order.objects.filter(user=request.user, is_paid=False).first()
 
     return render(request, 'tech_store/catalog.html', {
         'category': category,
@@ -61,17 +57,38 @@ def category_detail(request, slug):
         'placeholders': placeholders,
         'order': order
     })
-    
 
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk, is_active=True)
-    return render(request, 'tech_store/product_detail.html', {'product': product})
+@login_required
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    order, _ = Order.objects.get_or_create(user=request.user, is_paid=False)
+    order_item, created = OrderItem.objects.get_or_create(order=order, product=product, defaults={'price': product.price})
+    if not created:
+        order_item.quantity += 1
+        order_item.save()
 
-def cart(request):
+    order.total_price = sum(item.get_total() for item in order.items.all())
+    order.save()
+    return redirect('cart')
+
+
+
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+
     order = None
     if request.user.is_authenticated:
-        orders = Order.objects.filter(user=request.user, is_paid=False)
-        order = orders.first() if orders.exists() else None
+        order = Order.objects.filter(user=request.user, is_paid=False).first()
+
+    return render(request, 'tech_store/product_detail.html', {
+        'product': product,
+        'order': order
+    })
+
+
+@login_required
+def cart(request):
+    order = Order.objects.filter(user=request.user, is_paid=False).first()
     return render(request, 'tech_store/cart.html', {'order': order})
 
 class CategoryListAPIView(generics.ListAPIView):
@@ -92,16 +109,3 @@ class ProductDetailAPIView(generics.RetrieveAPIView):
 class OrderListAPIView(generics.ListCreateAPIView):
     serializer_class = OrderSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
-
-class OrderDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = OrderSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get_queryset(self):
-        return Order.objects.filter(user=self.request.user)

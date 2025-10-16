@@ -1,27 +1,11 @@
-from django.contrib import admin
-from django.urls import path, include
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
-from rest_framework import permissions
-from .views import home, product_detail, cart, category_detail
-
-schema_view = get_schema_view(
-    openapi.Info(
-        title="Tech Store API",
-        default_version='v1',
-        description="API магазина бытовой техники",
-    ),
-    public=True,
-    permission_classes=(permissions.AllowAny,),
-)
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('tech_store.urls')),
-    path('category/<slug:slug>/', category_detail, name='category-detail'), 
-    path('api/clients/', include('clients.urls')),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
+    path('', views.home_view, name='home'),
+    path('catalog/', views.catalog_view, name='catalog'),
+    path('category/<slug:slug>/', views.category_detail, name='category_detail'),
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('cart/', views.cart, name='cart'),
+    path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add_to_cart'),
 ]

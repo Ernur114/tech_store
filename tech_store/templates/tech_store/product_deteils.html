@@ -9,9 +9,12 @@
 </head>
 <body>
 <header>
-    <div class="techstore-title">Tech Store</div>
+    <div class="header-top">
+        <span class="techstore-title">Tech Store</span>
+    </div>
     <nav class="navbar">
         <a href="{% url 'home' %}" class="nav-item"><i class="fa-solid fa-house"></i> Главная</a>
+        <a href="{% url 'catalog' %}" class="nav-item"><i class="fa-solid fa-list"></i> Каталог</a>
         <a href="{% url 'cart' %}" class="nav-item">
             <i class="fa-solid fa-cart-shopping"></i> Корзина
             {% if order %}<span class="cart-count">{{ order.items.count }}</span>{% endif %}
@@ -27,29 +30,28 @@
 </header>
 
 <main class="container" style="max-width: 900px; margin: 40px auto;">
-    <div class="product-detail" style="display: flex; gap: 30px; background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); flex-wrap: wrap;">
-        <div class="product-image" style="flex:1; min-width: 250px; max-width: 400px;">
+    <div class="product-detail" style="display: flex; gap: 30px; background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 3px 8px rgba(0,0,0,0.1);">
+        <div class="product-image" style="flex: 1;">
             {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width:100%; height: auto; object-fit: cover; border-radius:5px;">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: 10px;">
             {% else %}
-                <div class="image-placeholder"></div>
+                <div class="image-placeholder" style="width: 100%; height: 300px; background: #ccc; border-radius: 10px;"></div>
             {% endif %}
         </div>
 
-        <div class="product-info" style="flex:1; min-width:250px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div class="product-info" style="flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <h1>{{ product.name }}</h1>
-                <p>{{ product.description|default:"Описание отсутствует." }}</p>
-                <p class="price">{{ product.price }} ₸</p>
+                <h1 style="margin-bottom: 15px;">{{ product.name }}</h1>
+                <p style="font-size: 1.1em; color: #555; margin-bottom: 20px;">{{ product.description|default:"Описание отсутствует." }}</p>
+                <p style="font-size: 1.3em; font-weight: bold; color: #000;">{{ product.price }} ₸</p>
             </div>
 
-            <form method="post" action="{% url 'add_to_cart' product.id %}">
+            <form method="post" action="{% url 'add-to-cart' product.id %}">
                 {% csrf_token %}
-                <button type="submit" class="catalog-btn"><i class="fa-solid fa-cart-plus"></i> Добавить в корзину</button>
+                <button type="submit" class="catalog-btn" style="width: 100%; text-align: center;">Добавить в корзину</button>
             </form>
         </div>
     </div>
 </main>
 </body>
 </html>
-    

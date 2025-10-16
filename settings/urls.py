@@ -5,7 +5,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from clients.views import login_page, register_page
-from tech_store.views import home, category_detail, product_detail, cart, catalog_view
+from tech_store.views import home_view, category_detail, product_detail, cart, catalog_view, add_to_cart
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.conf import settings
@@ -20,6 +20,8 @@ schema_view = get_schema_view(
         title="Tech Store API",
         default_version='v1',
         description="API магазина бытовой техники",
+        contact=openapi.Contact(email="support@techstore.local"),
+        license=openapi.License(name="MIT License"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -27,10 +29,11 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home, name='home'),
+    path('', home_view, name='home'),
     path('catalog/', catalog_view, name='catalog'),
+    path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
     path('category/<slug:slug>/', category_detail, name='category-detail'),
-    path('product/<int:pk>/', product_detail, name='product-detail'),
+    path('product/<int:product_id>/', product_detail, name='product_detail'),
     path('cart/', cart, name='cart'),
     path('logout/', logout_view, name='logout'),
     path('login/', login_page, name='login-short'),
@@ -40,6 +43,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
 ]
+
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
