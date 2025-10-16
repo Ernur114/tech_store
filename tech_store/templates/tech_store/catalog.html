@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Tech Store</title>
+    <title>{{ category.name }} — Tech Store</title>
     <link rel="stylesheet" href="{% static 'tech_store/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -18,7 +18,6 @@
             <i class="fa-solid fa-cart-shopping"></i> Корзина
             {% if order %}<span class="cart-count">{{ order.items.count }}</span>{% endif %}
         </a>
-
         {% if user.is_authenticated %}
             <span class="nav-item"><i class="fa-solid fa-user"></i> {{ user.username }}</span>
             <a href="{% url 'logout' %}" class="nav-item"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
@@ -30,34 +29,37 @@
 </header>
 
 <main class="container">
-<a href="{% url 'catalog' %}" class="catalog-btn">Каталог товаров</a>
+    <a href="{% url 'catalog' %}" class="catalog-btn">Каталог товаров</a>
+    <div class="categories-list">
+        {% for cat in categories %}
+            <a href="{% url 'category-detail' cat.slug %}" class="category-btn {% if cat.id == category.id %}active{% endif %}">
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <h2>{{ category.name }}</h2>
 
     <div class="products-grid">
         {% for product in products %}
-        <div class="product-card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <div class="image-placeholder"></div>
-            {% endif %}
-            <div class="product-info">
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                    <div class="image-placeholder"></div>
+                {% endif %}
                 <h3>{{ product.name }}</h3>
                 <p>{{ product.price }} ₸</p>
             </div>
-        </div>
         {% endfor %}
-
         {% for _ in placeholders %}
-        <div class="product-card placeholder">
-            <div class="image-placeholder"></div>
-            <div class="product-info">
+            <div class="product-card placeholder">
+                <div class="image-placeholder"></div>
                 <h3>Название товара</h3>
                 <p>Цена</p>
             </div>
-        </div>
         {% endfor %}
     </div>
-</div>
 </main>
 </body>
 </html>
