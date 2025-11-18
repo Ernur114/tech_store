@@ -1,41 +1,9 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>{% if category %}{{ category.name }}{% elif search_query %}Результаты поиска: {{ search_query }}{% else %}Каталог — Tech Store{% endif %}</title>
-    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}?v=3">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-<header>
-    <div class="header-top">
-        <span class="techstore-title">Tech Store</span>
-    </div>
-    <nav class="navbar">
-        <a href="{% url 'home' %}" class="nav-item"><i class="fa-solid fa-house"></i> Главная</a>
-        <a href="{% url 'cart' %}" class="nav-item">
-            <i class="fa-solid fa-cart-shopping"></i> Корзина
-            {% if order %}<span class="cart-count">{{ order.items.count }}</span>{% endif %}
-        </a>
-        {% if user.is_authenticated %}
-            <span class="nav-item"><i class="fa-solid fa-user"></i> {{ user.username }}</span>
-            <a href="{% url 'logout' %}" class="nav-item"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
-        {% else %}
-            <a href="{% url 'login-short' %}" class="nav-item"><i class="fa-solid fa-right-to-bracket"></i> Войти</a>
-            <a href="{% url 'register-short' %}" class="nav-item"><i class="fa-solid fa-user-plus"></i> Регистрация</a>
-        {% endif %}
-    </nav>
-</header>
-
-<main class="container">
+{% extends 'tech_store/base.html' %}
+{% block title %}{% if category %}{{ category.name }}{% elif search_query %}Результаты поиска: {{ search_query }}{% else %}Каталог — Tech Store{% endif %}{% endblock %}
+{% block content %}
     <a href="{% url 'catalog' %}" class="catalog-btn">Каталог товаров</a>
-    <div class="search-bar">
-        <form method="get" action="{% url 'product_search' %}" class="search-form">
-            <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Поиск товаров..." aria-label="Поиск товаров">
-            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-        </form>
-    </div>
+    {% include 'tech_store/includes/_search_form.html' with search_query=search_query %}
+
     <div class="categories-list">
         {% for cat in categories %}
             <a href="{% url 'category-detail' cat.slug %}" class="category-btn {% if category and cat.id == category.id %}active{% endif %}">
@@ -52,28 +20,18 @@
         <h2>Все товары</h2>
     {% endif %}
 
-<div class="products-grid">
-    {% for product in products %}
-            <a href="{% url 'product_detail' product.id %}" class="product-card">
-            {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-            {% else %}
-                <div class="image-placeholder"></div>
-            {% endif %}
-            <h3>{{ product.name }}</h3>
-            <p>{{ product.price }} ₸</p>
-        </a>
-    {% endfor %}
-    {% for _ in placeholders %}
-        <div class="product-card placeholder">
-            <div class="image-placeholder"></div>
-            <h3>Название товара</h3>
-            <p>Цена</p>
-        </div>
-    {% endfor %}
-</div>
+    <div class="products-grid">
+        {% for product in products %}
+            {% include 'tech_store/includes/_product_card.html' with product=product %}
+        {% endfor %}
 
-</main>
-</body>
-</html>
+        {% for _ in placeholders %}
+            <div class="product-card placeholder">
+                <div class="image-placeholder"></div>
+                <h3>Название товара</h3>
+                <p>Цена</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
 

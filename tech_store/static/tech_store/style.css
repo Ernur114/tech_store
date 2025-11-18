@@ -77,6 +77,25 @@ header .techstore-title {
     margin-bottom: 10px;
 }
 
+/* Product detail layout */
+.product-detail {
+    display: flex; gap: 30px; background: #fff; border-radius: 10px; padding: 25px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); flex-wrap: wrap; max-width: 900px; margin: 40px auto;
+}
+.product-detail .product-image { flex: 1; min-width: 250px; max-width: 400px; }
+.product-detail .product-image img { width: 100%; height: auto; object-fit: contain; border-radius: 5px; }
+.product-detail .product-info { flex: 1; min-width: 250px; display:flex; flex-direction:column; justify-content:space-between; }
+.product-detail .muted { color: #555; margin-bottom: 12px; }
+.product-detail .price { font-size: 1.3em; font-weight: bold; }
+.product-detail .out-of-stock { color: #a00; }
+
+/* Cart styles */
+.cart-list { margin-top: 20px; }
+.cart-item { display:flex; gap:15px; margin-bottom:20px; background:#fff; padding:15px; border-radius:8px; box-shadow:0 2px 5px rgba(0,0,0,0.1); align-items:center; }
+.cart-item img { width:120px; height:120px; object-fit:cover; border-radius:5px; }
+.cart-thumb { width:120px; height:120px; background:#ccc; border-radius:5px; }
+.cart-info { display:flex; flex-direction:column; justify-content:space-between; }
+.cart-total { text-align:right; margin-top:20px; }
+
 .product-card h3 {
     font-size: 0.95em;
     margin: 5px 0;
