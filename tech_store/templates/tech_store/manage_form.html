@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ action }} товар</title>
+    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}?v=3">
+</head>
+<body>
+<header>
+    <div style="padding:20px"><a href="{% url 'manage_products' %}">Назад к списку</a></div>
+</header>
+<main style="padding:20px;max-width:900px">
+    <h2>{{ action }} товар</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <table>
+            {{ form.as_table }}
+        </table>
+        <div style="margin-top:12px">
+            <button type="submit">{{ action }}</button>
+        </div>
+    </form>
+</main>
+    {% if user.is_superuser %}
+    <div style="position:fixed;right:20px;bottom:20px;">
+        <a href="{% url 'admin:index' %}" class="catalog-btn">Admin</a>
+    </div>
+    {% endif %}
+</body>
+</html>

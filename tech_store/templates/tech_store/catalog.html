@@ -3,8 +3,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>{{ category.name }} — Tech Store</title>
-    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}">
+    <title>{% if category %}{{ category.name }}{% elif search_query %}Результаты поиска: {{ search_query }}{% else %}Каталог — Tech Store{% endif %}</title>
+    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}?v=3">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -30,15 +30,27 @@
 
 <main class="container">
     <a href="{% url 'catalog' %}" class="catalog-btn">Каталог товаров</a>
+    <div class="search-bar">
+        <form method="get" action="{% url 'product_search' %}" class="search-form">
+            <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Поиск товаров..." aria-label="Поиск товаров">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </form>
+    </div>
     <div class="categories-list">
         {% for cat in categories %}
-            <a href="{% url 'category-detail' cat.slug %}" class="category-btn {% if cat.id == category.id %}active{% endif %}">
+            <a href="{% url 'category-detail' cat.slug %}" class="category-btn {% if category and cat.id == category.id %}active{% endif %}">
                 {{ cat.name }}
             </a>
         {% endfor %}
     </div>
 
-    <h2>{{ category.name }}</h2>
+    {% if category %}
+        <h2>{{ category.name }}</h2>
+    {% elif search_query %}
+        <h2>Результаты поиска: "{{ search_query }}"</h2>
+    {% else %}
+        <h2>Все товары</h2>
+    {% endif %}
 
 <div class="products-grid">
     {% for product in products %}
@@ -64,3 +76,4 @@
 </main>
 </body>
 </html>
+

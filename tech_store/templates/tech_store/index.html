@@ -58,5 +58,10 @@
         {% endfor %}
     </div>
 </main>
+    {% if user.is_superuser or user.is_staff %}
+    <div style="position:fixed;right:20px;bottom:20px;z-index:9999;">
+        <a href="{% url 'manage_products' %}" class="catalog-btn">Admin</a>
+    </div>
+    {% endif %}
 </body>
 </html>

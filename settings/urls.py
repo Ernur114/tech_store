@@ -5,7 +5,8 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from clients.views import login_page, register_page
-from tech_store.views import home_view, category_detail, product_detail, cart, catalog_view, add_to_cart
+from tech_store.views import home_view, category_detail, product_detail, cart, catalog_view, add_to_cart, search_view
+from tech_store.views import manage_products, manage_product_create, manage_product_edit, manage_product_delete
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.conf import settings
@@ -31,6 +32,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
     path('catalog/', catalog_view, name='catalog'),
+    path('search/', search_view, name='product_search'),
     path('add-to-cart/<int:product_id>/', add_to_cart, name='add_to_cart'),
     path('category/<slug:slug>/', category_detail, name='category-detail'),
     path('product/<int:product_id>/', product_detail, name='product_detail'),
@@ -42,6 +44,10 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-ui'),
+        path('manage/products/', manage_products, name='manage_products'),
+        path('manage/products/new/', manage_product_create, name='manage_product_create'),
+        path('manage/products/<int:pk>/edit/', manage_product_edit, name='manage_product_edit'),
+        path('manage/products/<int:pk>/delete/', manage_product_delete, name='manage_product_delete'),
 ]
 
 
