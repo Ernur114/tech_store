@@ -1,0 +1,6 @@
+<div class="search-bar">
+    <form method="get" action="{% url 'product_search' %}" class="search-form">
+        <input type="text" name="q" value="{{ search_query|default:'' }}" placeholder="Поиск товаров..." aria-label="Поиск товаров">
+        <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</div>

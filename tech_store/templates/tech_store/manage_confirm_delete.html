@@ -1,25 +1,13 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Удалить товар</title>
-    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}?v=3">
-</head>
-<body>
-<main style="padding:20px;max-width:800px">
-    <h2>Удалить товар</h2>
-    <p>Действительно удалить товар «{{ product.name }}»?</p>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Удалить</button>
-        <a href="{% url 'manage_products' %}">Отмена</a>
-    </form>
-</main>
-    {% if user.is_superuser %}
-    <div style="position:fixed;right:20px;bottom:20px;">
-        <a href="{% url 'admin:index' %}" class="catalog-btn">Админка</a>
-    </div>
-    {% endif %}
-</body>
-</html>
+{% extends 'tech_store/base.html' %}
+{% block title %}Удалить товар{% endblock %}
+{% block content %}
+    <main style="padding:20px;max-width:800px">
+        <h2>Удалить товар</h2>
+        <p>Действительно удалить товар «{{ product.name }}»?</p>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit">Удалить</button>
+            <a href="{% url 'manage_products' %}">Отмена</a>
+        </form>
+    </main>
+{% endblock %}

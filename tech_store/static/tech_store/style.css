@@ -61,25 +61,17 @@ header .techstore-title {
     margin-bottom: 40px;
 }
 
-.product-card {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
 .product-card img {
     width: 100%;
-    height: 120px;
-    object-fit: cover;
+    height: 180px; 
+    object-fit: contain;
     border-radius: 3px;
     margin-bottom: 10px;
+    background-color: #fff;
 }
-
 .image-placeholder {
     width: 100%;
-    height: 120px;
+    height: 180px;
     background-color: #ccc;
     border-radius: 3px;
     margin-bottom: 10px;
@@ -185,4 +177,44 @@ header .techstore-title {
     .search-form input[type="text"] {
         width: 100% !important;
     }
+
+    .product-card img,
+    .image-placeholder {
+        height: 140px;
+    }
 }
+
+.manage-header {
+    padding: 20px;
+}
+.manage-main {
+    padding: 20px;
+}
+.manage-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.manage-table th,
+.manage-table td {
+    text-align: left;
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+.manage-table thead th {
+    border-bottom: 1px solid #ddd;
+}
+
+/* Messages */
+.messages {
+    max-width: min(980px, 95%);
+    margin: 16px auto;
+}
+.message {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.message.success { background-color: #e6f7ea; color: #155724; }
+.message.error { background-color: #fdecea; color: #8a1f11; }
+.message.info { background-color: #edf4ff; color: #0b3d91; }

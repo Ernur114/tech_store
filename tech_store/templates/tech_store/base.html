@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Tech Store{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'tech_store/style.css' %}?v=3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block head_extra %}{% endblock %}
+</head>
+<body>
+<header>
+    <div class="header-top">
+        <span class="techstore-title">Tech Store</span>
+    </div>
+    <nav class="navbar">
+        <a href="{% url 'home' %}" class="nav-item"><i class="fa-solid fa-house"></i> Главная</a>
+        <a href="{% url 'cart' %}" class="nav-item">
+            <i class="fa-solid fa-cart-shopping"></i> Корзина
+            {% if order %}<span class="cart-count">{{ order.items.count }}</span>{% endif %}
+        </a>
+
+        {% if user.is_authenticated %}
+            <span class="nav-item"><i class="fa-solid fa-user"></i> {{ user.username }}</span>
+            <a href="{% url 'logout' %}" class="nav-item"><i class="fa-solid fa-right-from-bracket"></i> Выйти</a>
+        {% else %}
+            <a href="{% url 'login-short' %}" class="nav-item"><i class="fa-solid fa-right-to-bracket"></i> Войти</a>
+            <a href="{% url 'register-short' %}" class="nav-item"><i class="fa-solid fa-user-plus"></i> Регистрация</a>
+        {% endif %}
+    </nav>
+</header>
+
+<main class="container">
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+
+{% block footer_extra %}{% endblock %}
+
+{% if user.is_superuser or user.is_staff %}
+<div style="position:fixed;right:20px;bottom:20px;z-index:9999;">
+    <a href="{% url 'manage_products' %}" class="catalog-btn">Admin</a>
+</div>
+{% endif %}
+
+</body>
+</html>

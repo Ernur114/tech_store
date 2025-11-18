@@ -36,17 +36,22 @@
             {% endif %}
         </div>
 
-        <div class="product-info" style="flex:1; min-width:250px; display:flex; flex-direction:column; justify-content:space-between;">
+            <div class="product-info" style="flex:1; min-width:250px; display:flex; flex-direction:column; justify-content:space-between;">
             <div>
                 <h1>{{ product.name }}</h1>
                 <p>{{ product.description|default:"Описание отсутствует." }}</p>
                 <p class="price">{{ product.price }} ₸</p>
+                <p class="stock">{% if product.stock > 0 %}В наличии: {{ product.stock }}{% else %}<strong style="color:#a00">Нет в наличии</strong>{% endif %}</p>
             </div>
 
+            {% if product.stock > 0 %}
             <form method="post" action="{% url 'add_to_cart' product.id %}">
                 {% csrf_token %}
                 <button type="submit" class="catalog-btn"><i class="fa-solid fa-cart-plus"></i> Добавить в корзину</button>
             </form>
+            {% else %}
+                <button class="catalog-btn" disabled style="opacity:0.6;cursor:not-allowed;"><i class="fa-solid fa-cart-plus"></i> Недоступно</button>
+            {% endif %}
         </div>
     </div>
 </main>

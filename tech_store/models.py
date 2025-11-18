@@ -19,6 +19,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True)
     is_new = models.BooleanField(default=False)
     is_discount = models.BooleanField(default=False)
+    stock = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

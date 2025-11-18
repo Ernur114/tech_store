@@ -4,6 +4,7 @@ from .models import Category, Product, Order, OrderItem
 from django.db.models.functions import Lower
 from .serializers import CategorySerializer, ProductSerializer, OrderSerializer
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.urls import reverse
 from .forms import ProductForm
@@ -93,14 +94,32 @@ def search_view(request):
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id, is_active=True)
+
+    # Check stock availability
+    if product.stock <= 0:
+        messages.error(request, 'Товар отсутствует на складе и не может быть добавлен в корзину.')
+        return HttpResponseRedirect(reverse('product_detail', args=[product.id]))
+
     order, _ = Order.objects.get_or_create(user=request.user, is_paid=False)
     order_item, created = OrderItem.objects.get_or_create(order=order, product=product, defaults={'price': product.price})
+
+    # Desired quantity after adding one more
+    desired_qty = (order_item.quantity if not created else 0) + 1
+    if desired_qty > product.stock:
+        messages.error(request, 'Недостаточно товара на складе для добавления в корзину.')
+        return HttpResponseRedirect(reverse('product_detail', args=[product.id]))
+
     if not created:
-        order_item.quantity += 1
+        order_item.quantity = desired_qty
         order_item.save()
+
+    # decrement stock by one for the successfully added item
+    product.stock = max(product.stock - 1, 0)
+    product.save()
 
     order.total_price = sum(item.get_total() for item in order.items.all())
     order.save()
+    messages.success(request, 'Товар добавлен в корзину.')
     return redirect('cart')
 
 
